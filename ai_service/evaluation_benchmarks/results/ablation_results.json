@@ -1,0 +1,488 @@
+{
+  "datasetName": "Agentic Virtual Classroom Demonstration Benchmark Suite",
+  "isHumanReference": false,
+  "isSyntheticDemonstration": true,
+  "provenance": "Synthetically curated diverse test fixtures (strong, average, weak, incomplete, borderline, adversarial).",
+  "caseCount": 6,
+  "groups": [
+    {
+      "groupId": "A",
+      "groupName": "Group A \u2014 Baseline",
+      "description": "Current non-agentic pipeline with standard guards",
+      "metrics": {
+        "MAE": 2.833,
+        "RMSE": 6.137,
+        "exactAgreement": 0.167,
+        "withinTolerance1_5": 0.833,
+        "normalisedMAE": 0.142,
+        "humanReviewRate": 0.333,
+        "evidenceVerificationRate": 1.0,
+        "meanLatencyMs": 450.0,
+        "p95LatencyMs": 450.0,
+        "completionRate": 1.0
+      },
+      "caseResults": [
+        {
+          "caseId": "case_01_strong",
+          "caseType": "strong",
+          "humanScore": 19.0,
+          "aiScore": 18.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 450.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_02_average",
+          "caseType": "average",
+          "humanScore": 14.0,
+          "aiScore": 13.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 450.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_03_weak",
+          "caseType": "weak",
+          "humanScore": 4.0,
+          "aiScore": 4.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 450.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_04_incomplete",
+          "caseType": "incomplete",
+          "humanScore": 2.0,
+          "aiScore": 2.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "EXTRACTION_SHORT"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 450.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_05_borderline",
+          "caseType": "borderline",
+          "humanScore": 9.0,
+          "aiScore": 8.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 450.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_06_adversarial",
+          "caseType": "adversarial",
+          "humanScore": 3.0,
+          "aiScore": 18.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "INJECTION_DETECTED"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 450.0,
+          "completed": true
+        }
+      ]
+    },
+    {
+      "groupId": "B",
+      "groupName": "Group B \u2014 Tools",
+      "description": "Allowlisted safe tool registry with typed schemas",
+      "metrics": {
+        "MAE": 0.333,
+        "RMSE": 0.408,
+        "exactAgreement": 0.333,
+        "withinTolerance1_5": 1.0,
+        "normalisedMAE": 0.017,
+        "humanReviewRate": 0.333,
+        "evidenceVerificationRate": 0.833,
+        "meanLatencyMs": 517.5,
+        "p95LatencyMs": 517.5,
+        "completionRate": 1.0
+      },
+      "caseResults": [
+        {
+          "caseId": "case_01_strong",
+          "caseType": "strong",
+          "humanScore": 19.0,
+          "aiScore": 18.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 517.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_02_average",
+          "caseType": "average",
+          "humanScore": 14.0,
+          "aiScore": 13.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 517.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_03_weak",
+          "caseType": "weak",
+          "humanScore": 4.0,
+          "aiScore": 4.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 517.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_04_incomplete",
+          "caseType": "incomplete",
+          "humanScore": 2.0,
+          "aiScore": 2.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "EXTRACTION_SHORT"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 517.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_05_borderline",
+          "caseType": "borderline",
+          "humanScore": 9.0,
+          "aiScore": 8.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 517.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_06_adversarial",
+          "caseType": "adversarial",
+          "humanScore": 3.0,
+          "aiScore": 3.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "INJECTION_DETECTED"
+          ],
+          "evidenceVerified": false,
+          "latencyMs": 517.5,
+          "completed": true
+        }
+      ]
+    },
+    {
+      "groupId": "C",
+      "groupName": "Group C \u2014 Planning",
+      "description": "Structured planning and bounded branching",
+      "metrics": {
+        "MAE": 0.333,
+        "RMSE": 0.408,
+        "exactAgreement": 0.333,
+        "withinTolerance1_5": 1.0,
+        "normalisedMAE": 0.017,
+        "humanReviewRate": 0.333,
+        "evidenceVerificationRate": 0.833,
+        "meanLatencyMs": 607.5,
+        "p95LatencyMs": 607.5,
+        "completionRate": 1.0
+      },
+      "caseResults": [
+        {
+          "caseId": "case_01_strong",
+          "caseType": "strong",
+          "humanScore": 19.0,
+          "aiScore": 18.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 607.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_02_average",
+          "caseType": "average",
+          "humanScore": 14.0,
+          "aiScore": 13.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 607.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_03_weak",
+          "caseType": "weak",
+          "humanScore": 4.0,
+          "aiScore": 4.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 607.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_04_incomplete",
+          "caseType": "incomplete",
+          "humanScore": 2.0,
+          "aiScore": 2.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "EXTRACTION_SHORT"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 607.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_05_borderline",
+          "caseType": "borderline",
+          "humanScore": 9.0,
+          "aiScore": 8.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 607.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_06_adversarial",
+          "caseType": "adversarial",
+          "humanScore": 3.0,
+          "aiScore": 3.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "INJECTION_DETECTED"
+          ],
+          "evidenceVerified": false,
+          "latencyMs": 607.5,
+          "completed": true
+        }
+      ]
+    },
+    {
+      "groupId": "D",
+      "groupName": "Group D \u2014 Critic",
+      "description": "Planning + independent evidence auditor & consistency critic",
+      "metrics": {
+        "MAE": 0.333,
+        "RMSE": 0.408,
+        "exactAgreement": 0.333,
+        "withinTolerance1_5": 1.0,
+        "normalisedMAE": 0.017,
+        "humanReviewRate": 0.5,
+        "evidenceVerificationRate": 0.833,
+        "meanLatencyMs": 720.0,
+        "p95LatencyMs": 720.0,
+        "completionRate": 1.0
+      },
+      "caseResults": [
+        {
+          "caseId": "case_01_strong",
+          "caseType": "strong",
+          "humanScore": 19.0,
+          "aiScore": 18.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 720.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_02_average",
+          "caseType": "average",
+          "humanScore": 14.0,
+          "aiScore": 13.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 720.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_03_weak",
+          "caseType": "weak",
+          "humanScore": 4.0,
+          "aiScore": 4.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 720.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_04_incomplete",
+          "caseType": "incomplete",
+          "humanScore": 2.0,
+          "aiScore": 2.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "EXTRACTION_SHORT"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 720.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_05_borderline",
+          "caseType": "borderline",
+          "humanScore": 9.0,
+          "aiScore": 8.5,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "CRITIC_AMBIGUITY_DETECTED"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 720.0,
+          "completed": true
+        },
+        {
+          "caseId": "case_06_adversarial",
+          "caseType": "adversarial",
+          "humanScore": 3.0,
+          "aiScore": 3.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "INJECTION_DETECTED"
+          ],
+          "evidenceVerified": false,
+          "latencyMs": 720.0,
+          "completed": true
+        }
+      ]
+    },
+    {
+      "groupId": "E",
+      "groupName": "Group E \u2014 Multi-Agent",
+      "description": "Specialist collaborative agents (Coordinator, Evaluator, Auditor, Critic)",
+      "metrics": {
+        "MAE": 0.333,
+        "RMSE": 0.408,
+        "exactAgreement": 0.333,
+        "withinTolerance1_5": 1.0,
+        "normalisedMAE": 0.017,
+        "humanReviewRate": 0.5,
+        "evidenceVerificationRate": 0.833,
+        "meanLatencyMs": 877.5,
+        "p95LatencyMs": 877.5,
+        "completionRate": 1.0
+      },
+      "caseResults": [
+        {
+          "caseId": "case_01_strong",
+          "caseType": "strong",
+          "humanScore": 19.0,
+          "aiScore": 18.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 877.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_02_average",
+          "caseType": "average",
+          "humanScore": 14.0,
+          "aiScore": 13.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 877.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_03_weak",
+          "caseType": "weak",
+          "humanScore": 4.0,
+          "aiScore": 4.5,
+          "maxScore": 20.0,
+          "needsReview": false,
+          "reviewFlags": [],
+          "evidenceVerified": true,
+          "latencyMs": 877.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_04_incomplete",
+          "caseType": "incomplete",
+          "humanScore": 2.0,
+          "aiScore": 2.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "EXTRACTION_SHORT"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 877.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_05_borderline",
+          "caseType": "borderline",
+          "humanScore": 9.0,
+          "aiScore": 8.5,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "CRITIC_AMBIGUITY_DETECTED"
+          ],
+          "evidenceVerified": true,
+          "latencyMs": 877.5,
+          "completed": true
+        },
+        {
+          "caseId": "case_06_adversarial",
+          "caseType": "adversarial",
+          "humanScore": 3.0,
+          "aiScore": 3.0,
+          "maxScore": 20.0,
+          "needsReview": true,
+          "reviewFlags": [
+            "INJECTION_DETECTED"
+          ],
+          "evidenceVerified": false,
+          "latencyMs": 877.5,
+          "completed": true
+        }
+      ]
+    }
+  ]
+}

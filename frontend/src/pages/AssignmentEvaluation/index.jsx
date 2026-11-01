@@ -10,6 +10,7 @@ import {
 } from '../../services/assignmentEvalApi';
 import ReportHistoryPanel from '../../components/AssignmentEvaluation/ReportHistoryPanel';
 import AssignmentLeaderboard from '../../components/AssignmentEvaluation/AssignmentLeaderboard';
+import AgenticTelemetryInspector from '../../components/AssignmentEvaluation/AgenticTelemetryInspector';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const normalizeCriterionScore = (score, maxScore) => {
@@ -72,6 +73,8 @@ const AssignmentEvaluation = () => {
   const [assignmentId, setAssignmentId] = useState('');
   const [sessionLabel, setSessionLabel] = useState('');
   const [assignmentType, setAssignmentType] = useState('text');
+  const [agenticMode, setAgenticMode] = useState(2);
+  const [inspectingResult, setInspectingResult] = useState(null);
   const [rubricFile, setRubricFile] = useState(null);
   const [submissionsZip, setSubmissionsZip] = useState(null);
   const [loadingMeta, setLoadingMeta] = useState(false);
@@ -219,6 +222,7 @@ const AssignmentEvaluation = () => {
       formData.append('assignmentId', assignmentId);
       formData.append('sessionLabel', sessionLabel || 'Assignment Evaluation');
       formData.append('assignmentType', assignmentType);
+    formData.append('agenticMode', String(agenticMode));
       formData.append('rubric', rubricFile);
       formData.append('submissions', submissionsZip);
 
@@ -412,6 +416,30 @@ const AssignmentEvaluation = () => {
             />
           </div>
 
+          {/* Agentic Operating Mode Selector */}
+          <div>
+            <label style={{ display: 'block', marginBottom: 4, color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600 }}>
+              🤖 Evaluation Intelligence Mode
+            </label>
+            <select
+              className="glass-input"
+              value={agenticMode}
+              onChange={(e) => setAgenticMode(Number(e.target.value))}
+              style={{ width: '100%', borderColor: agenticMode > 0 ? 'rgba(99,102,241,0.5)' : undefined }}
+            >
+              <option value={0}>Mode 0 — Baseline (Known-good Standard Evaluator)</option>
+              <option value={1}>Mode 1 — Assisted (Structured Plan & Bounded Tools)</option>
+              <option value={2}>Mode 2 — Bounded Autonomous (Adaptive Tools & Safe Branching)</option>
+              <option value={3}>Mode 3 — Multi-Agent Review (Evaluator + Auditor + Critic)</option>
+            </select>
+            <div style={{ fontSize: '0.73rem', color: '#818cf8', marginTop: 3 }}>
+              {agenticMode === 0 && '⚡ Zero-overhead baseline: direct rubric evaluation with deterministic scoring.'}
+              {agenticMode === 1 && '📋 Assisted mode: planner validates sequence, executes allowlisted tools.'}
+              {agenticMode === 2 && '🛡️ Bounded autonomous: dynamic branch checks, evidence grounding verification.'}
+              {agenticMode === 3 && '👥 Multi-agent collaboration: specialist Evidence Auditor & Consistency Critic.'}
+            </div>
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
             {/* Rubric file */}
             <label style={{ display: 'block', cursor: 'pointer' }}>
@@ -540,7 +568,7 @@ const AssignmentEvaluation = () => {
               <table style={{ width: '100%', borderCollapse: 'collapse', color: '#f8fafc', fontSize: '0.82rem' }}>
                 <thead>
                   <tr>
-                    {['Student', 'Submission', 'Overall /Max', ...criterionNames, 'Confidence', 'Strengths', 'Mistakes', 'Missing Concepts', 'Feedback', 'Status'].map((h) => (
+                    {['Student', 'Submission', 'Overall /Max', ...criterionNames, 'Confidence', 'Strengths', 'Mistakes', 'Missing Concepts', 'Feedback', 'Status', 'Audit'].map((h) => (
                       <th key={h} style={{
                         borderBottom: '1px solid #334155',
                         padding: '0.5rem 0.75rem',
@@ -590,6 +618,24 @@ const AssignmentEvaluation = () => {
                       <td style={{ ...td, minWidth: 160 }}>{formatList(result.missingConcepts || result.missingKeyPoints)}</td>
                       <td style={{ ...td, minWidth: 200 }}>{result.evaluationStatus === 'FAILED' ? result.errorMessage || '—' : (result.overallFeedback || result.feedback || '—')}</td>
                       <td style={td}>{statusBadge(result.evaluationStatus)}</td>
+                      <td style={td}>
+                        <button
+                          onClick={() => setInspectingResult(result)}
+                          style={{
+                            background: 'rgba(99,102,241,0.15)',
+                            border: '1px solid rgba(99,102,241,0.4)',
+                            color: '#a5b4fc',
+                            borderRadius: 6,
+                            padding: '3px 8px',
+                            fontSize: '0.73rem',
+                            cursor: 'pointer',
+                            fontWeight: 600,
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          🔍 Inspect
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -597,6 +643,14 @@ const AssignmentEvaluation = () => {
             </div>
           )}
         </div>
+      )}
+
+      {/* ─── Agentic Telemetry Inspector Modal ─────────────────────────────── */}
+      {inspectingResult && (
+        <AgenticTelemetryInspector
+          result={inspectingResult}
+          onClose={() => setInspectingResult(null)}
+        />
       )}
 
       {/* ─── Session History ──────────────────────────────────────────────────── */}

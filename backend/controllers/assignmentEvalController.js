@@ -124,7 +124,7 @@ const resolveAssignmentId = async (assignmentInput) => {
 
 exports.startBatchEvalSession = async (req, res, next) => {
   try {
-    const { courseId, assignmentId, sessionLabel, assignmentType } = req.body;
+    const { courseId, assignmentId, sessionLabel, assignmentType, agenticMode } = req.body;
     const professorId = req.user?._id || req.user?.id;
 
     if (!professorId) {
@@ -182,6 +182,7 @@ exports.startBatchEvalSession = async (req, res, next) => {
         : '',
       modelAnswer: assignment?.extractedAssignmentText || '',
       webhookUrl: `${backendBase}/api/assignment-eval/webhook`,
+      agenticMode: Number(agenticMode || 0),
     };
 
     const queueBatchEvaluation = async () => {
@@ -493,7 +494,7 @@ exports.handleAssignmentWebhook = async (req, res, next) => {
 exports.triggerSingleEval = async (req, res, next) => {
   try {
     const { submissionId } = req.params;
-    const { assignmentId } = req.body || {};
+    const { assignmentId, agenticMode } = req.body || {};
 
     const submission = await AssignmentSubmission.findById(submissionId).populate('assignment');
     if (!submission) {
@@ -526,6 +527,7 @@ exports.triggerSingleEval = async (req, res, next) => {
         modelAnswer: assignment.extractedAssignmentText || '',
       },
       webhookUrl: '',
+      agenticMode: Number(agenticMode || 0),
     };
 
     const response = await axios.post(`${AI_BASE}/eval/single-assignment`, payload, { timeout: 30000 });

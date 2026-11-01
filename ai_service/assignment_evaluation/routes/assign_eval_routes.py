@@ -13,6 +13,7 @@ class BatchAssignEvalRequest(BaseModel):
     assignmentQuestion: str = ""
     modelAnswer: str = ""
     webhookUrl: str
+    agenticMode: int = 0
 
 
 class SingleAssignEvalRequest(BaseModel):
@@ -21,6 +22,7 @@ class SingleAssignEvalRequest(BaseModel):
     assignmentType: str = "text"
     rubricPackage: dict = {}
     webhookUrl: str = ""
+    agenticMode: int = 0
 
 
 @router.post("/batch-assignment")
@@ -51,16 +53,19 @@ async def trigger_batch_assignment_eval(req: BatchAssignEvalRequest):
 @router.post("/single-assignment")
 async def trigger_single_assignment_eval(req: SingleAssignEvalRequest):
     try:
-        from assignment_evaluation.pipelines.orchestrator import evaluate_single_submission_with_llm
+        from agentic_eval.orchestrator import default_orchestrator
+        from agentic_eval.config import ConfigOverride
+
+        eval_enabled = req.agenticMode > 0
+        with ConfigOverride(eval_enabled=eval_enabled, mode=req.agenticMode):
+            result = await default_orchestrator.evaluate_single_assignment(
+                student_text=req.studentText,
+                rubric_package=req.rubricPackage,
+                assignment_type=req.assignmentType,
+                student_name=req.submissionId,
+                file_name=req.submissionId,
+            )
+
+        return {"success": True, "result": result}
     except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Could not initialize single assignment evaluator: {exc}")
-
-    result = await evaluate_single_submission_with_llm(
-        student_text=req.studentText,
-        rubric_package=req.rubricPackage,
-        assignment_type=req.assignmentType,
-        student_name=req.submissionId,
-        file_name=req.submissionId,
-    )
-
-    return {"success": True, "result": result}
+        raise HTTPException(status_code=500, detail=f"Could not execute single assignment evaluator: {exc}")
