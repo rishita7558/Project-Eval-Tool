@@ -10,7 +10,7 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
   const critic = specialists.criticReviewer || null;
   const breakdown = result.scoreBreakdown || {};
 
-  const [overrideScore, setOverrideScore] = useState(result.overallScore ?? result.score ?? 0);
+  const [overrideScore, setOverrideScore] = useState(result.overallScore ?? result.score ?? '');
   const [overrideNotes, setOverrideNotes] = useState('');
   const [isOverriding, setIsOverriding] = useState(false);
 
@@ -24,13 +24,19 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
   const modeName = modeLabels[agentic.mode] || (result.agenticExecution ? `Mode ${agentic.mode}` : 'Baseline Execution');
 
   const defaultPlanSteps = [
-    { tool: 'validate_rubric', purpose: 'Validate grading bounds & establish integrity snapshot', status: 'COMPLETED' },
-    { tool: 'validate_submission_input', purpose: 'Scan text & protect against prompt injection', status: 'COMPLETED' },
-    { tool: 'evaluate_against_rubric', purpose: 'Evaluate criterion performance with Groq/Ollama', status: 'COMPLETED' },
-    { tool: 'verify_evidence_spans', purpose: 'Independently audit quoted text against submission', status: 'COMPLETED' },
-    { tool: 'calculate_final_score', purpose: 'Deterministically sum scores & clamp to bounds', status: 'COMPLETED' },
-    { tool: 'run_quality_checks', purpose: 'Enforce state machine review policy', status: 'COMPLETED' },
+    { tool: 'validate_rubric', purpose: 'Validate grading bounds & establish integrity snapshot', status: 'UNAVAILABLE' },
+    { tool: 'validate_submission_input', purpose: 'Scan text & protect against prompt injection', status: 'UNAVAILABLE' },
+    { tool: 'evaluate_against_rubric', purpose: 'Evaluate criterion performance with Groq/Ollama', status: 'UNAVAILABLE' },
+    { tool: 'verify_evidence_spans', purpose: 'Independently audit quoted text against submission', status: 'UNAVAILABLE' },
+    { tool: 'calculate_final_score', purpose: 'Deterministically sum scores & clamp to bounds', status: 'UNAVAILABLE' },
+    { tool: 'run_quality_checks', purpose: 'Enforce state machine review policy', status: 'UNAVAILABLE' },
   ];
+  const planSteps = Array.isArray(agentic.planSteps) && agentic.planSteps.length > 0
+    ? agentic.planSteps
+    : defaultPlanSteps;
+  const hasValidScore = typeof result.overallScore === 'number' && Number.isFinite(result.overallScore);
+  const status = result.evaluationStatus || (result.needsReview ? 'NEEDS_REVIEW' : hasValidScore ? 'COMPLETED' : 'FAILED');
+  const evidenceRate = agentic.evidenceVerificationRate;
 
   return (
     <div style={{
@@ -84,7 +90,7 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
           <div style={{ background: 'rgba(30, 41, 59, 0.7)', padding: '0.75rem', borderRadius: 10, border: '1px solid #334155' }}>
             <span style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>Final Score</span>
             <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#38bdf8' }}>
-              {result.overallScore ?? result.score ?? '—'} / {result.maxScore ?? 100}
+              {hasValidScore ? result.overallScore : '—'} / {result.maxScore ?? 100}
               <span style={{ fontSize: '0.8rem', color: '#94a3b8', marginLeft: 6 }}>({result.gradeLabel || '—'})</span>
             </div>
           </div>
@@ -92,13 +98,17 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
           <div style={{ background: 'rgba(30, 41, 59, 0.7)', padding: '0.75rem', borderRadius: 10, border: '1px solid #334155' }}>
             <span style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>Review Status</span>
             <div style={{ fontSize: '1rem', fontWeight: 600, marginTop: 3 }}>
-              {result.needsReview ? (
+              {status === 'NEEDS_REVIEW' ? (
                 <span style={{ color: '#fb923c', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <AlertTriangle size={16} /> Needs Review
                 </span>
-              ) : (
+              ) : status === 'COMPLETED' && hasValidScore ? (
                 <span style={{ color: '#4ade80', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <CheckCircle2 size={16} /> Completed
+                </span>
+              ) : (
+                <span style={{ color: '#f87171', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <XCircle size={16} /> Failed
                 </span>
               )}
             </div>
@@ -107,7 +117,9 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
           <div style={{ background: 'rgba(30, 41, 59, 0.7)', padding: '0.75rem', borderRadius: 10, border: '1px solid #334155' }}>
             <span style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>Evidence Grounding</span>
             <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#4ade80' }}>
-              {agentic.evidenceVerificationRate ? `${(agentic.evidenceVerificationRate * 100).toFixed(0)}%` : '100%'}
+              {typeof evidenceRate === 'number'
+                ? `${(evidenceRate * 100).toFixed(0)}%`
+                : 'Unavailable'}
             </div>
           </div>
 
@@ -139,7 +151,7 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
             <Cpu size={16} color="#818cf8" /> Validated Execution Plan Steps
           </h4>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-            {defaultPlanSteps.map((step, idx) => (
+            {planSteps.map((step, idx) => (
               <div key={idx} style={{
                 background: 'rgba(15, 23, 42, 0.8)',
                 border: '1px solid rgba(51, 65, 85, 0.8)',
@@ -148,7 +160,9 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                   <code style={{ color: '#38bdf8', fontWeight: 600 }}>{step.tool}</code>
-                  <span style={{ color: '#4ade80', fontSize: '0.7rem' }}>✓</span>
+                  <span style={{ color: step.status === 'FAILED' ? '#f87171' : step.status === 'COMPLETED' ? '#4ade80' : '#fbbf24', fontSize: '0.7rem' }}>
+                    {step.status === 'FAILED' ? '✕' : step.status === 'COMPLETED' ? '✓' : '—'}
+                  </span>
                 </div>
                 <div style={{ color: '#94a3b8', fontSize: '0.72rem' }}>{step.purpose}</div>
               </div>
@@ -221,13 +235,15 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
                 <div style={{ color: '#94a3b8', fontSize: '0.78rem', marginBottom: 4 }}>
                   <strong>Rationale:</strong> {critData.reason || critData.feedback || '—'}
                 </div>
-                {critData.evidence && (
+                {critData.evidence ? (
                   <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '0.4rem 0.6rem', borderRadius: 6, fontSize: '0.75rem', color: '#cbd5e1' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: critData.evidenceVerified ? '#4ade80' : '#fb923c', marginBottom: 2, fontWeight: 600 }}>
                       <CheckCircle2 size={12} /> {critData.evidenceVerified ? 'Verified Student Text Quotation:' : 'Cited Student Text Quotation:'}
                     </div>
                     <em>"{critData.evidence}"</em>
                   </div>
+                ) : (
+                  <div style={{ color: '#fbbf24', fontSize: '0.75rem' }}>No evidence citation was provided.</div>
                 )}
               </div>
             ))}
@@ -271,6 +287,7 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
               }}
             />
             <button
+              disabled={overrideScore === '' || !Number.isFinite(Number(overrideScore))}
               onClick={() => {
                 if (onSaveOverride) {
                   onSaveOverride(result, overrideScore, overrideNotes);
@@ -291,4 +308,3 @@ export default function AgenticTelemetryInspector({ result, onClose, onSaveOverr
     </div>
   );
 }
-
